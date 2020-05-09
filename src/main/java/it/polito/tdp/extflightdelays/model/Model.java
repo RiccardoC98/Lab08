@@ -15,19 +15,24 @@ public class Model {
 	Graph <Airport, DefaultWeightedEdge> grafo;
 	ExtFlightDelaysDAO dao = new ExtFlightDelaysDAO();
 	Map <Integer, Airport> idMap;
+	String arcWeights;
 	
 	public Model() {
-		idMap = new HashMap<>();
+
 	}
 	
 	public void creaGrafo(int minimaDistanza) {
+		
+		idMap = new HashMap<>();
+		arcWeights = "";
+		this.grafo = new SimpleWeightedGraph<>(DefaultWeightedEdge.class); // inizializzo
 		
 		for (Airport a : dao.loadAllAirports()) {
 			this.idMap.put(a.getId(), a);
 		}
 		
 		int md = minimaDistanza; // comodità
-		this.grafo = new SimpleWeightedGraph<>(DefaultWeightedEdge.class); // inizializzo
+		
 		
 		
 		// carico tutti i possibili archi
@@ -40,12 +45,13 @@ public class Model {
 				Airport sourceVertex = idMap.get(a.getOriginID());
 				Airport targetVertex = idMap.get(a.getDestID());
 				double weight = (double) a.getWeight();
+				// arcWeights += "From: " + sourceVertex.getAirportName() + " To: " + targetVertex.getAirportName() + " Weight: " + weight + "\n";
 				
+				arcWeights += String.format("From: %s To: %s Weight: %8.1f\n", sourceVertex.getAirportName(), targetVertex.getAirportName(), weight );
 				Graphs.addEdge(this.grafo, sourceVertex, targetVertex, weight);
 			}
 		}		
 		
-		this.grafo.rem
 	}
 	
 	public int nVertici() {
@@ -57,10 +63,7 @@ public class Model {
 		return this.grafo.edgeSet().size();
 	}
 	
-	public String getArchiEDist() {
-		String res = "";
-		for (Airport a : grafo.vertexSet()) {
-			res += a.getAirportName() + 
-		}
+	public String getArchiEDistanza() {
+		return arcWeights;
 	}
 }
